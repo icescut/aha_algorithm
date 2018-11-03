@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "common.h"
 
 #define SRC_LEN 10
 
@@ -53,11 +54,15 @@ void quictSort(int arr[], int left, int right)
         // 交换
         if (i < j)
         {
+            /*
             tmp = arr[j];
             arr[j] = arr[i];
             arr[i] = tmp;
+            */
+            swap(arr, i, j);
         }
     }
+    // 交换最后找到的小于基准点的位置和基准点
     arr[left] = arr[i];
     arr[i] = pviot;
 
