@@ -1,15 +1,18 @@
 /****************************************************************************
  * File name    : card_game.c
  * Author       : Alan Liang
- * Description  : ã€Šå•Šå“ˆï¼Œç®—æ³•ã€‹å°çŒ«é’“é±¼æ¸¸æˆ
- *                å‡è®¾åªæœ‰9ç§ç‰Œé¢ï¼š1~9
+ * Description  : ¡¶°¡¹ş£¬Ëã·¨¡·Ğ¡Ã¨µöÓãÓÎÏ·
+ *                ¼ÙÉèÖ»ÓĞ9ÖÖÅÆÃæ£º1~9
+ *                ¶ÓÍ·ÎªµÚÒ»¸öÔªËØÎ»ÖÃ
+ *                ¶ÓÎ²ÎªÏÂÒ»¸ö¿ÉÓÃÎ»ÖÃ
+ *                Õ»¶¥ÎªÏÂÒ»¸ö¿ÉÓÃµÄÎ»ÖÃ
  * History      :
- *                v0.1  Alan        2018/11/03 å»ºç«‹æ–‡ä»¶
+ *                v0.1  Alan        2018/11/03 ½¨Á¢ÎÄ¼ş
  ****************************************************************************/
 
 #include <stdio.h>
 
-// æ‰‹ç‰Œ
+// ÊÖÅÆ
 typedef struct queue
 {
     int data[1000];
@@ -17,15 +20,122 @@ typedef struct queue
     int tail;
 } queue;
 
-// å°é¢
+// Ì¨Ãæ
 typedef struct stack
 {
     int data[10];
     int top;
 } stack;
 
+// ×ÀÃæÉÏÓĞÊ²Ã´ÅÆ
+int book[10] = {0};
+stack s;
+
+void play(queue *q);
+void show_cards(queue q1, queue q2, stack s);
+void show_info(queue q);
+
 int main(void)
 {
     queue q1, q2;
+
+    // ³õÊ¼»¯
+    q1.head = 0;
+    q1.data[0] = 2;
+    q1.data[1] = 4;
+    q1.data[2] = 1;
+    q1.data[3] = 2;
+    q1.data[4] = 5;
+    q1.data[5] = 6;
+    q1.tail = 6;
+
+    q2.head = 0;
+    q2.data[0] = 3;
+    q2.data[1] = 1;
+    q2.data[2] = 3;
+    q2.data[3] = 5;
+    q2.data[4] = 6;
+    q2.data[5] = 4;
+    q2.tail = 6;
+
+    s.top = 0;
+
+    show_cards(q1, q2, s);
+
+    while(q1.head < q1.tail && q2.head < q2.tail)
+    {
+        play(&q1);
+        play(&q2);
+        show_cards(q1, q2, s);
+    }
+
+    if(q1.head == q1.tail)
+    {
+        printf("Ğ¡¹şwin\n");
+    } else
+    {
+        printf("Ğ¡ºßwin\n");
+    }
+
     return 0;
+}
+
+/*
+ * Function     : ³öÅÆ
+ * Description  : 
+ * In           : ÊÖÅÆ
+ * Out          : void
+ */
+void play(queue *q)
+{
+    // ´ò³öµÄÅÆ
+    int t = q->data[q->head++];
+
+    // Ì¨ÃæÃ»ÓĞÕâÕÅÅÆ
+    if(!book[t])
+    {
+        // ¼ÇÂ¼ÕâÕÅÅÆÒÑ¾­³ö¹ıÁË
+        book[t] = 1;
+        // °ÑÅÆ·Åµ½Ì¨Ãæ
+        s.data[s.top++] = t;
+    } else
+    // Èç¹ûÓ®ÅÆ
+    {
+        // ½«¸Õ²Å³öµÄ³öÅÆ·Å»ØÊÖÅÆ
+        q->data[q->tail++] = t;
+        // ½«Ì¨ÃæÉÏµÄÅÆ·Åµ½ÊÖÅÆ
+        while(s.data[s.top-1] != t)
+        {
+            // ¼ÇÂ¼ÕâÕÅÅÆ²»ÔÚÌ¨ÃæÁË
+            book[s.data[s.top-1]] = 0;
+            // ·ÅÈëÊÖÅÆ
+            q->data[q->tail++] = s.data[s.top-1];
+            s.top--;
+        }
+    }
+}
+
+/*
+ * Function     : ´òÓ¡ÊÖÅÆºÍÌ¨ÃæÇé¿ö
+ * Description  : 
+ * In           : ÊÖÅÆ£¬Ì¨Ãæ
+ * Out          : void
+ */
+void show_cards(queue q1, queue q2, stack s)
+{
+    printf("===========================================\n");
+    printf("%s: ", "Ğ¡ºß£º");
+    for (int i = q1.head; i < q1.tail; ++i)
+        printf("%d ", q1.data[i]);
+    printf("\n");
+
+    printf("%s: ", "Ğ¡¹ş£º");
+    for (int i = q2.head; i < q2.tail; ++i)
+        printf("%d ", q2.data[i]);
+    printf("\n");
+
+    printf("%s: ", "Ì¨Ãæ£º");
+    for (int i = 0; i < s.top; i++)
+        printf("%d ", s.data[i]);
+    printf("\n");
 }
