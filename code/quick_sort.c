@@ -54,17 +54,11 @@ void quictSort(int arr[], int left, int right)
         // 交换
         if (i < j)
         {
-            /*
-            tmp = arr[j];
-            arr[j] = arr[i];
-            arr[i] = tmp;
-            */
             swap(arr, i, j);
         }
     }
     // 交换最后找到的小于基准点的位置和基准点
-    arr[left] = arr[i];
-    arr[i] = pviot;
+    swap(arr, left, i);
 
     quictSort(arr, left, i-1);
     quictSort(arr, i+1, right);
